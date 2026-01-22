@@ -1,0 +1,45 @@
+// {
+//   "compilerOptions": {
+//     "target": "esnext",
+//     "module": "esnext",
+//     "jsx": "react-jsx",
+//     "lib": [
+//       "esnext"
+//     ],
+//     "strict": false,
+//     "esModuleInterop": true,
+//     "skipLibCheck": true,
+//     "moduleResolution": "node",
+//     "resolveJsonModule": true,
+//     "allowSyntheticDefaultImports": true,
+//     "baseUrl": "./"
+//   },
+//   "include": [
+//     "**/*.ts",
+//     "**/*.tsx"
+//   ],
+//   "exclude": [
+//     "node_modules"
+//   ],
+//   "extends": "expo/tsconfig.base"
+// }
+{
+  "extends": "expo/tsconfig.base",
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "esnext",
+    "jsx": "react-jsx",
+    "lib": ["esnext"],
+    "strict": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "baseUrl": "./",
+    "types": ["react", "react-native", "node"]  // ✅ Add "node" here
+  },
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["node_modules"]
+}
+
