@@ -25,14 +25,7 @@ export interface DiatomClass {
   environmentalSignificance: string;
   impacts: string;
 }
-export interface ClassificationResult {
-  className: string;
-  confidence: number;
-  description: string;
-  environmentalSignificance: string;
-  impacts: string;
-  recordId: string;
-}
+
 
 export interface ClassificationResult {
   className: string;
@@ -99,9 +92,12 @@ export type RootStackParamList = {
   Signup: undefined;
   Home: undefined;
   Upload: undefined;
+  Logout: undefined;
   Result: { result: ClassificationResult };
   History: undefined;
   Profile: undefined;
   AdminLogin: undefined;
   AdminDashboard: undefined;
+  UserTabs: undefined;
+
 };

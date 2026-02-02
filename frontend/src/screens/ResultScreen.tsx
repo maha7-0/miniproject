@@ -1,3 +1,4 @@
+
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import {
@@ -86,9 +87,9 @@ export default function ResultScreen({ navigation, route }: Props) {
       <View style={styles.actionGroup}>
         <TouchableOpacity
           style={styles.primaryButton}
-          onPress={() => navigation.navigate('Home')}
+          onPress={() => navigation.navigate('History')}
         >
-          <Text style={styles.primaryButtonText}>Back to Home</Text>
+          <Text style={styles.primaryButtonText}>View History</Text>
         </TouchableOpacity>
 
         <TouchableOpacity

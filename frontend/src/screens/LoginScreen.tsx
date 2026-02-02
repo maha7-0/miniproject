@@ -2,31 +2,22 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import {
-    ActivityIndicator,
-    Alert,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  ActivityIndicator,
+  Alert,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { authService } from 'src/services';
-import { RootStackParamList, } from 'src/types/type';
+import { RootStackParamList } from 'src/types/type';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Login'>;
 
-interface LoginScreenProps extends Props {
-  setIsAuthenticated: (value: boolean) => void;
-  setUserToken: (token: string) => void;
-  
-}
-
-export default function LoginScreen({
-  navigation,
-  setIsAuthenticated,
-  setUserToken,
-}: LoginScreenProps) {
+export default function LoginScreen({ navigation }: Props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -55,48 +46,46 @@ export default function LoginScreen({
     setIsLoading(true);
     try {
       const response = await authService.login(email, password);
-if (response && response.token) {
-  await AsyncStorage.setItem('userToken', response.token);
-  await AsyncStorage.setItem('user', JSON.stringify(response.user));
 
-  setUserToken(response.token);
-  setIsAuthenticated(true);
+      if (response && response.token) {
+        await AsyncStorage.setItem('userToken', response.token);
+        await AsyncStorage.setItem('user', JSON.stringify(response.user));
 
-  navigation.reset({
-    index: 0,
-    routes: [{ name: 'Home' }],
-  });
-}
-else {
-         Alert.alert('Login Failed', 'Invalid credentials or server error');
+        navigation.navigate('Upload');
+
+      } else {
+        Alert.alert('Login Failed', 'Invalid credentials or server error');
       }
-//       if (response && response.token) {
-//         setUserToken(response.token);
-// await AsyncStorage.setItem('userToken', response.token);
-// await AsyncStorage.setItem('user', JSON.stringify(response.user));
-
-//         setIsAuthenticated(true);
-//       } else if (response && response.message) {
-//         Alert.alert('Login Failed', response.message);
-     
     } catch (error: any) {
-      console.error('Login error:', error);
-      const errorMessage = 
-        error?.response?.data?.message || 
-        error?.message || 
+      const errorMessage =
+        error?.response?.data?.message ||
+        error?.message ||
         'An error occurred during login';
       Alert.alert('Login Failed', errorMessage);
     } finally {
       setIsLoading(false);
     }
+    
   };
+  const handleSignupNavigation = () => {
+  console.log("Navigating to Signup...");
+  
+  // 1. Make sure 'Signup' matches exactly the 'name' property 
+  // in your Stack.Screen (it is case-sensitive!)
+  navigation.navigate('Signup'); 
+};
 
   return (
+    
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>BioLens</Text>
-        <Text style={styles.subtitle}>Diatom Classification</Text>
-      </View>
+  <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+    <Ionicons name="arrow-back" size={28} color="#2d5a3d" />
+  </TouchableOpacity>
+  <Text style={styles.title}>BioLens</Text>
+  <Text style={styles.subtitle}>Diatom Classification</Text>
+</View>
+
 
       <View style={styles.form}>
         <Text style={styles.label}>Email</Text>
@@ -136,11 +125,22 @@ else {
           )}
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => navigation.navigate('Signup')} disabled={isLoading}>
+        {/* <TouchableOpacity onPress={() => navigation.navigate('Signup')} disabled={isLoading}>
           <Text style={styles.link}>
             Don't have an account? <Text style={styles.linkBold}>Sign up</Text>
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+
+<TouchableOpacity 
+  onPress={handleSignupNavigation} 
+  // Tip: Remove 'disabled={isLoading}' if you want users to be 
+  // able to leave the page even if a login attempt is pending.
+  style={styles.signupLinkContainer}
+>
+  <Text style={styles.link}>
+    Don't have an account? <Text style={styles.linkBold}>Sign up</Text>
+  </Text>
+</TouchableOpacity>
 
         <TouchableOpacity
           onPress={() => navigation.navigate('AdminLogin')}
@@ -175,24 +175,40 @@ const styles = StyleSheet.create({
     color: '#d0d0d0',
     marginTop: 8,
   },
+  
   form: {
-    padding: 24,
-  },
+  padding: 24,
+  maxWidth: 600,   // ✅ limit width on larger screens
+  alignSelf: 'center', // ✅ center the form horizontally
+  width: '100%',    // ✅ ensure it takes full width of its container
+},
+input: {
+  borderWidth: 1,
+  borderColor: '#ddd',
+  borderRadius: 8,
+  padding: 12,
+  fontSize: 14,
+  color: '#333',
+  backgroundColor: '#f9f9f9',
+  width: '100%',   // ✅ fill only the form container, not the whole screen
+},
+
+  backButton: {
+  position: 'absolute',
+  top: 40,   // adjust for status bar
+  left: 20,
+  zIndex: 500,
+  backgroundColor: '#fff', // ensures white background
+  borderRadius: 50,        // optional, if you want a circular white background
+  padding: 2,              // small padding so the white background shows
+},
+
   label: {
     fontSize: 14,
     fontWeight: '600',
     color: '#333',
     marginBottom: 8,
     marginTop: 16,
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 14,
-    color: '#333',
-    backgroundColor: '#f9f9f9',
   },
   inputError: {
     borderColor: '#ff6b6b',
@@ -239,4 +255,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
   },
+  signupLinkContainer: {
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  
 });
+
+
+
+// ui correct 
+

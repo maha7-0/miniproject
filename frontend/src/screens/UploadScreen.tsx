@@ -1,6 +1,7 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import * as ImagePicker from 'expo-image-picker';
 import { useEffect, useState } from 'react';
+import { Ionicons } from '@expo/vector-icons'; // Add this for the icon
 import {
   StyleSheet,
   Text,
@@ -91,10 +92,14 @@ export default function UploadScreen({ navigation }: Props) {
       const token = await AsyncStorage.getItem('userToken');
       if (!token) {
         Alert.alert('Error', 'Authentication token not found');
+        
         return;
       }
 
-      const response = await axios.post<ApiResponse<{ classification: ClassificationResult }>>(
+      const response = await axios.post<{
+        success: boolean;
+        classification: ClassificationResult;
+      }>(
         `${API_URL}/classification/classify`,
         { imageBase64: image },
         {
@@ -104,13 +109,12 @@ export default function UploadScreen({ navigation }: Props) {
         }
       );
 
- if (response.data.success && response.data.data?.classification) {
-  navigation.navigate('Result', {
-    result: response.data.data.classification,
-  });
-  setImage(null);
-
-
+      if (response.data.success && response.data.classification) {
+        console.log('No token found');
+        navigation.navigate('Result', {
+          result: response.data.classification,
+        });
+        setImage(null);
       }
     } catch (error: any) {
       const errorMessage =
@@ -126,203 +130,252 @@ export default function UploadScreen({ navigation }: Props) {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Upload Microscopic Image</Text>
-        <Text style={styles.subtitle}>Capture or select a diatom specimen image</Text>
-      </View>
-      
+    <View style={styles.container1}>
+  {/* Banner */}
+  <View style={styles.header}>
+    <Text style={styles.title}>BioLens</Text>
+    <Text style={styles.subtitle}>Upload & Classification</Text>
 
-    <View style={styles.previewContainer}>
-        {image ? (
-          <Image
-            source={{ uri: `data:image/jpeg;base64,${image}` }}
-            style={styles.preview}
-          />
-        ) : (
-           <View style={styles.placeholderPreview}>
-          //   <Text style={styles.placeholderText}>📷</Text>
-          //   <Text style={styles.placeholderLabel}>No image selected</Text>
-           </View>
-        )}
-      </View>
+    {/* Profile button inside banner */}
+    <TouchableOpacity 
+      style={styles.profileButton}
+      onPress={() => navigation.navigate('Profile')}
+    >
+      <Ionicons name="person-circle-outline" size={35} color="#fff" />
+    </TouchableOpacity>
+  </View>
 
-      <View style={styles.buttonGroup}>
-        <TouchableOpacity
-          style={[styles.button, styles.cameraButton]}
-          onPress={() => pickImage('camera')}
-          disabled={loading || classifying}
-        >
-          {loading ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.buttonText}>📷 Take Photo</Text>
-          )}
+  {/* Scrollable content below banner */}
+  <ScrollView
+    contentContainerStyle={styles.container}
+    showsVerticalScrollIndicator={false}
+  >
+    <View style={styles.topImageWrapper}>
+      <Image source={require('../../assets/output.jpeg')} style={styles.image} />
+    </View>
+
+    <Text style={styles.title}>Upload your image</Text>
+
+    <TouchableOpacity 
+      style={styles.uploadBtn} 
+      onPress={() => pickImage('gallery')}
+      disabled={loading || classifying}
+    >
+      <Text style={styles.uploadText}>Click to upload</Text>
+    </TouchableOpacity>
+
+    {image && (
+      <View style={styles.previewContainer}>
+        <TouchableOpacity style={styles.cancelBtn} onPress={() => setImage(null)}>
+          <Text style={styles.cancelText}>✕</Text>
         </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.button, styles.galleryButton]}
-          onPress={() => pickImage('gallery')}
-          disabled={loading || classifying}
-        >
-          {loading ? (
-            <ActivityIndicator color="#fff" />
-          ) : (
-            <Text style={styles.buttonText}>🖼️ Choose from Gallery</Text>
-          )}
-        </TouchableOpacity>
+        <Image source={{ uri: `data:image/jpeg;base64,${image}` }} style={styles.preview} />
       </View>
+    )}
 
-      {image && (
-        <View style={styles.actionGroup}>
-          <TouchableOpacity
-            style={[styles.actionButton, styles.classifyButton]}
-            onPress={handleClassify}
-            disabled={classifying}
-          >
-            {classifying ? (
-              <ActivityIndicator color="#fff" />
-            ) : (
-              <Text style={styles.actionButtonText}>Classify Image</Text>
-            )}
-          </TouchableOpacity>
+    <TouchableOpacity 
+      style={styles.predictCircle} 
+      onPress={handleClassify}
+      disabled={classifying}
+    >
+      <Text style={styles.predictText}>
+        {classifying ? 'Processing...' : `Start\nPredicting`}
+      </Text>
+    </TouchableOpacity>
+  </ScrollView>
+</View>
 
-          <TouchableOpacity
-            style={[styles.actionButton, styles.clearButton]}
-            onPress={handleClear}
-            disabled={classifying}
-          >
-            <Text style={styles.clearButtonText}>Clear</Text>
-          </TouchableOpacity>
-        </View>
-      )}
+//     <View style={styles.container1}>
+     
+//       <ScrollView
+//         contentContainerStyle={styles.container}
+//         showsVerticalScrollIndicator={false}
+//       >
+//         <View style={styles.header}>
+//   <Text style={styles.title}>BioLens</Text>
+//   <Text style={styles.subtitle}>Upload & Classification</Text>
 
-      <View style={styles.infoCard}>
-        <Text style={styles.infoTitle}>Image Requirements</Text>
-        <View style={styles.requirementList}>
-          <Text style={styles.requirement}>• High-quality microscopic image</Text>
-          <Text style={styles.requirement}>• Clear diatom specimen visible</Text>
-          <Text style={styles.requirement}>• Proper lighting and focus</Text>
-          <Text style={styles.requirement}>• Square format recommended</Text>
-        </View>
-      </View>
-    </ScrollView>
+//   {/* Profile button inside header */}
+//   <TouchableOpacity 
+//     style={styles.profileButton}
+//     onPress={() => navigation.navigate('Profile')}
+//   >
+//     <Ionicons name="person-circle-outline" size={35} color="#fff" />
+//   </TouchableOpacity>
+// </View>
+
+//         {/* Curved Illustration */}
+//         <View style={styles.topImageWrapper}>
+//           <Image
+//             source={require('../../assets/output.jpeg')}
+//             style={styles.image}
+//           />
+//         </View>
+
+//         <Text style={styles.title}>Upload your image</Text>
+
+//         <TouchableOpacity 
+//           style={styles.uploadBtn} 
+//           onPress={() => pickImage('gallery')}
+//           disabled={loading || classifying}
+//         >
+//           <Text style={styles.uploadText}>Click to upload</Text>
+//         </TouchableOpacity>
+//           {image && (
+//           <View style={styles.previewContainer}>
+//             <TouchableOpacity
+//               style={styles.cancelBtn}
+//               onPress={() => setImage(null)}
+//             >
+//               <Text style={styles.cancelText}>✕</Text>
+//             </TouchableOpacity>
+
+//             <Image 
+//               source={{ uri: `data:image/jpeg;base64,${image}` }} 
+//               style={styles.preview} 
+//             />
+//           </View>
+//         )}
+
+//         <TouchableOpacity 
+//           style={styles.predictCircle} 
+//           onPress={handleClassify}
+//           disabled={classifying}
+//         >
+//           <Text style={styles.predictText}>
+//             {classifying ? 'Processing...' : `Start\nPredicting`}
+//           </Text>
+//         </TouchableOpacity>
+//       </ScrollView>
+//     </View>
   );
 }
 
 
 
 const styles = StyleSheet.create({
+  
   container: {
-    flex: 1,
-    backgroundColor: '#f8f9fa',
-  },
-  contentContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 20,
-  },
-  header: {
-    marginBottom: 24,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: '#1a1a1a',
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: '#666',
-  },
+  flex: 1,
+  backgroundColor: '#fff',
+  alignItems: 'center',
+  paddingTop: 40,
+  width: '100%',          // ✅ fill available width
+  maxWidth: 700,          // ✅ cap width on desktop so it doesn’t get too wide
+  alignSelf: 'center',    // ✅ center the whole block
+},
+uploadBtn: {
+  backgroundColor: '#0b6e3b',
+  paddingHorizontal: 20,
+  paddingVertical: 12,
+  borderRadius: 8,
+  marginBottom: 20,
+  width: '80%',           // ✅ expand button width
+  alignItems: 'center',
+},
+preview: {
+  width: 200,             // ✅ larger preview
+  height: 200,
+  borderRadius: 12,
+  marginBottom: 20,
+},
+predictCircle: {
+  width: 200,             // ✅ bigger circle
+  height: 200,
+  borderRadius: 100,
+  backgroundColor: '#0b6e3b',
+  justifyContent: 'center',
+  alignItems: 'center',
+  borderWidth: 12,
+  borderColor: '#8fe0b0',
+},
+
   previewContainer: {
-    marginBottom: 24,
-    borderRadius: 12,
-    overflow: 'hidden',
-    backgroundColor: '#fff',
-    borderWidth: 1,
-    borderColor: '#e0e0e0',
+    position: 'relative',
+    marginBottom: 20,
   },
-  preview: {
+  cancelBtn: {
+    position: 'absolute',
+    top: -8,
+    right: -8,
+    zIndex: 10,
+    backgroundColor: '#000',
+    width: 26,
+    height: 26,
+    borderRadius: 13,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  cancelText: {
+    color: '#fff',
+    fontSize: 14,
+    fontWeight: '700',
+  },
+  /* 🔥 Curved container */
+  topImageWrapper: {
+    width: 240,
+    height: 240,
+    borderRadius: 40,
+    overflow: 'hidden',
+    marginBottom: 20,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+  },
+  image: {
     width: '100%',
-    height: 300,
+    height: '100%',
     resizeMode: 'cover',
   },
-  placeholderPreview: {
-    width: '100%',
-    height: 300,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#f0f0f0',
+  
+  
+  uploadText: {
+    color: '#fff',
+    fontWeight: '600',
   },
-  placeholderText: {
-    fontSize: 48,
-    marginBottom: 8,
-  },
-  placeholderLabel: {
-    fontSize: 14,
-    color: '#999',
-  },
-  buttonGroup: {
-    gap: 12,
-    marginBottom: 20,
-  },
-  button: {
-    paddingVertical: 14,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  cameraButton: {
-    backgroundColor: '#2d5a3d',
-  },
-  galleryButton: {
-    backgroundColor: '#4a7c5e',
-  },
-  buttonText: {
+  
+  
+  predictText: {
     color: '#fff',
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: '700',
+    textAlign: 'center',
   },
-  actionGroup: {
-    gap: 12,
-    marginBottom: 20,
+  container1: {
+    flex: 1,
+    backgroundColor: '#fff',
   },
-  actionButton: {
-    paddingVertical: 14,
-    borderRadius: 8,
+  // Added this to handle the scrolling area separately
+  scrollContent: {
     alignItems: 'center',
+    paddingTop: 60, // Increased to make room for the profile icon
+    paddingBottom: 40,
   },
-  classifyButton: {
-    backgroundColor: '#2d5a3d',
-  },
-  actionButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  clearButton: {
-    backgroundColor: '#e0e0e0',
-  },
-  clearButtonText: {
-    color: '#666',
-    fontSize: 16,
-    fontWeight: '600',
-  },
-  infoCard: {
-    backgroundColor: '#e8f0eb',
-    borderRadius: 12,
-    padding: 16,
-  },
-  infoTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#2d5a3d',
-    marginBottom: 12,
-  },
-  requirementList: {
-    gap: 8,
-  },
-  requirement: {
-    fontSize: 13,
-    color: '#555',
-  },
+  // --- STYLE FOR THE NEW BUTTON ---
+  
+  header: {
+  paddingTop: 60,
+  paddingBottom: 40,
+  alignItems: 'center',
+  backgroundColor: '#2d5a3d', // ✅ green banner
+  position: 'relative',
+},
+title: {
+  fontSize: 32,
+  fontWeight: 'bold',
+  color: '#fff',
+},
+subtitle: {
+  fontSize: 14,
+  color: '#d0d0d0',
+  marginTop: 8,
+},
+profileButton: {
+  position: 'absolute',
+  top: 20,    // ✅ inside the banner
+  right: 20,
+},
+
 });

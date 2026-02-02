@@ -124,7 +124,7 @@ export default function HistoryScreen({ navigation }: Props) {
         style={styles.emptyButton}
         onPress={() => navigation.navigate('Upload')}
       >
-        <Text style={styles.emptyButtonText}>Upload Image</Text>
+        <Text style={styles.emptyButtonText}>Back to Upload</Text>
       </TouchableOpacity>
     </View>
   );

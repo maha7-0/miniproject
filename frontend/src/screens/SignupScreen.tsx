@@ -40,7 +40,7 @@ export default function SignupScreen({
   });
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<FormErrors>({});
-
+const [successDialog, setSuccessDialog] = useState(false);
   const validateForm = () => {
     const newErrors: FormErrors = {};
 
@@ -71,6 +71,8 @@ export default function SignupScreen({
   };
 
   const handleSignup = async () => {
+    
+
     if (!validateForm()) return;
 
     setIsLoading(true);
@@ -86,6 +88,7 @@ export default function SignupScreen({
       if (response && response.token) {
         setUserToken(response.token);
         setIsAuthenticated(true);
+        setSuccessDialog(true);
       } else if (response && response.message) {
         Alert.alert('Signup Failed', response.message);
       } else {
@@ -110,6 +113,19 @@ export default function SignupScreen({
         <Text style={styles.title}>Create Account</Text>
         <Text style={styles.subtitle}>Join BioLens</Text>
       </View>
+    {successDialog && (
+  <View style={styles.dialogOverlay}>
+    <View style={styles.dialogBox}>
+      <Text style={styles.dialogText}>Signed up successfully</Text>
+      <TouchableOpacity 
+        style={styles.dialogButton} 
+        onPress={() => setSuccessDialog(false)}
+      >
+        <Text style={styles.dialogButtonText}>OK</Text>
+      </TouchableOpacity>
+    </View>
+  </View>
+)}
 
       <View style={styles.form}>
         <Text style={styles.label}>Full Name</Text>
@@ -204,8 +220,21 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   form: {
-    padding: 24,
-  },
+  padding: 24,
+  maxWidth: 600,   // ✅ limit width on larger screens
+  alignSelf: 'center', // ✅ center the form horizontally
+  width: '100%',    // ✅ ensure it takes full width of its container
+},
+input: {
+  borderWidth: 1,
+  borderColor: '#ddd',
+  borderRadius: 8,
+  padding: 12,
+  fontSize: 14,
+  color: '#333',
+  backgroundColor: '#f9f9f9',
+  width: '100%',   // ✅ fill only the form container, not the whole screen
+},
   label: {
     fontSize: 14,
     fontWeight: '600',
@@ -213,15 +242,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     marginTop: 12,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 14,
-    color: '#333',
-    backgroundColor: '#f9f9f9',
-  },
+  
   inputError: {
     borderColor: '#ff6b6b',
   },
@@ -255,4 +276,33 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: '#2d5a3d',
   },
+dialogOverlay: {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0,
+  backgroundColor: '#2d5a3d',
+  padding: 12,
+  alignItems: 'center',
+},
+dialogBox: {
+  backgroundColor: 'transparent', // banner style
+},
+dialogText: {
+  color: '#fff',
+  fontWeight: '600',
+},
+
+dialogButton: {
+  backgroundColor: '#2d5a3d',
+  paddingHorizontal: 20,
+  paddingVertical: 10,
+  borderRadius: 8,
+},
+
+dialogButtonText: {
+  color: '#fff',
+  fontWeight: '600',
+},
+
 });

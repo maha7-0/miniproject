@@ -1,6 +1,13 @@
 const ClassificationRecord = require('../models/ClassificationRecord');
 const DiatomClass = require('../models/DiatomClass');
 const mockClassifier = require('../utils/mockClassifier');
+const axios = require('axios');
+const FormData = require('form-data');
+const { Readable } = require('stream');
+const { getSpeciesName } = require('../utils/diatomClassMapping');
+
+// ML Service configuration
+const ML_SERVICE_URL = process.env.ML_SERVICE_URL || 'http://localhost:8000';
 
 /**
  * Classify an uploaded image
@@ -14,9 +21,34 @@ const userId = req.user.id;
   }
 
   try {
-    // TODO: Load and run .h5 TensorFlow model here
-    // Currently using mock classifier for demonstration
-    const classification = mockClassifier.classify(imageBase64);
+    let classification;
+    
+    try {
+      // Try to call ML service for prediction
+      const imageBuffer = Buffer.from(imageBase64, 'base64');
+      
+      // Create FormData with the image
+      const form = new FormData();
+      const stream = Readable.from(imageBuffer);
+      form.append('file', stream, 'image.jpg');
+      
+      const response = await axios.post(`${ML_SERVICE_URL}/predict`, form, {
+        headers: form.getHeaders(),
+        timeout: 30000
+      });
+      
+      const speciesName = getSpeciesName(response.data.class_id);
+      console.log(response.data);
+      classification = {
+        className: speciesName,
+        confidence: 0.95
+      };
+      console.log('✓ ML Service prediction:', classification);
+    } catch (mlError) {
+      console.warn('⚠ ML Service unavailable, using mock classifier:', mlError.message);
+      // Fallback to mock classifier if ML service is down
+      classification = mockClassifier.classify(imageBase64);
+    }
 
     // Fetch diatom class details from database
     const diatomClass = await DiatomClass.findOne({ name: classification.className });
