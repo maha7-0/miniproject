@@ -1,19 +1,19 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { CompositeNavigationProp, useFocusEffect } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import axios from 'axios';
 import { useCallback, useState } from 'react';
 import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  FlatList,
-  ActivityIndicator,
-  Alert,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
-import { RootStackParamList, ClassificationResult } from 'src/types/type';
+import { ClassificationResult, RootStackParamList } from 'src/types/type';
 
 type HistoryScreenNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<RootStackParamList, 'History'>,
@@ -59,7 +59,8 @@ export default function HistoryScreen({ navigation }: Props) {
         },
       });
 
-      setRecords(response.data);
+     setRecords(response.data.records);
+
     } catch (error: any) {
       const errorMessage =
         error.response?.data?.message || 'Failed to load history. Please try again.';
@@ -136,35 +137,48 @@ export default function HistoryScreen({ navigation }: Props) {
       </View>
     );
   }
-
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Classification History</Text>
-        <Text style={styles.subtitle}>Your previous classifications</Text>
-      </View>
+  <View style={styles.container}>
+    <View style={styles.banner}>
 
-      {records.length > 0 ? (
-        <FlatList
-          data={records}
-          renderItem={renderHistoryItem}
-          keyExtractor={(item) => item._id}
-          contentContainerStyle={styles.listContent}
-          scrollEnabled={true}
-        />
-      ) : (
-        renderEmptyState()
-      )}
+  {/* Profile text inside banner */}
+  <Text style={styles.bannerTitle}>Classification History</Text>
+  <Text style={styles.bannersubtitle}>Your previous classifications</Text>
+</View>
+   
+    {records.length > 0 ? (
+      <FlatList
+        data={records}
+        renderItem={renderHistoryItem}
+        keyExtractor={(item) => item._id}
+        contentContainerStyle={styles.listContent}
+        scrollEnabled={true}
+      />
+    ) : (
+      renderEmptyState()
+    )}
 
-      {records.length > 0 && (
-        <View style={styles.footer}>
-          <TouchableOpacity style={styles.refreshButton} onPress={loadHistory}>
-            <Text style={styles.refreshButtonText}>Refresh</Text>
-          </TouchableOpacity>
-        </View>
-      )}
+    {/* Always show Back to Upload button */}
+    <View style={styles.footer}>
+      <TouchableOpacity
+        style={styles.refreshButton}
+        onPress={loadHistory}
+      >
+        <Text style={styles.refreshButtonText}>Refresh</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[styles.refreshButton, { marginTop: 10, backgroundColor: '#2d5a3d' }]}
+        onPress={() => navigation.navigate('Upload')}
+      >
+        <Text style={styles.refreshButtonText}>Back to Upload</Text>
+      </TouchableOpacity>
     </View>
-  );
+  </View>
+);
+
+
+  
 }
 
 
@@ -264,11 +278,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingVertical: 12,
     borderRadius: 8,
+    width: '60%',
+    alignSelf: 'center',
   },
   emptyButtonText: {
     color: '#fff',
     fontSize: 14,
     fontWeight: '600',
+    textAlign: 'center',
   },
   footer: {
     paddingHorizontal: 16,
@@ -281,11 +298,33 @@ const styles = StyleSheet.create({
     backgroundColor: '#2d5a3d',
     paddingVertical: 12,
     borderRadius: 8,
-    alignItems: 'center',
+    width: '60%',
+    alignSelf: 'center',
   },
   refreshButtonText: {
     color: '#fff',
     fontSize: 14,
     fontWeight: '600',
+    
+    textAlign: 'center',
+
   },
+  banner: {
+  paddingTop: 60,
+  paddingBottom: 40,
+  alignItems: 'center',
+  backgroundColor: '#2d5a3d',   // ✅ green banner
+  position: 'relative',
+},
+bannerTitle: {
+  fontSize: 28,
+  fontWeight: 'bold',
+  color: '#fff',                // ✅ white text over green
+},
+
+bannersubtitle: {
+  fontSize: 14,
+  color: '#d0d0d0',
+  marginTop: 8,
+},
 });

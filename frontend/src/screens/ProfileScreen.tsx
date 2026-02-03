@@ -1,16 +1,15 @@
-import React, { useCallback, useState } from 'react';
+import { Ionicons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback, useState } from 'react';
 import {
+  ActivityIndicator,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
-  ScrollView,
-  ActivityIndicator,
-  Alert,
+  View
 } from 'react-native';
-import { useFocusEffect } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Ionicons } from '@expo/vector-icons';
 
 // --- TYPES ---
 interface User {
@@ -53,23 +52,27 @@ export default function ProfileScreen({ navigation, setIsAuthenticated }: any) {
 
   return (
     <View style={styles.container}>
-      {/* --- BACK BUTTON --- */}
-      <TouchableOpacity 
-        style={styles.backButton} 
-        onPress={() => navigation.goBack()}
-      >
-        <Ionicons name="arrow-back-circle" size={45} color="#2d5a3d" />
-      </TouchableOpacity>
+      
+<View style={styles.banner}>
+  {/* Back button inside banner */}
+  <TouchableOpacity 
+    style={styles.backButton} 
+    onPress={() => navigation.goBack()}
+  >
+    <Ionicons name="arrow-back-circle" size={45} color="#fff" />
+  </TouchableOpacity>
+
+  {/* Profile text inside banner */}
+  <Text style={styles.bannerTitle}>Biolens</Text>
+  <Text style={styles.subtitle}>Profile</Text>
+</View>
 
       <ScrollView 
         style={styles.container} 
         contentContainerStyle={[styles.contentContainer, { paddingTop: 100 }]}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.header}>
-          <Text style={styles.title}>Profile</Text>
-        </View>
-
+        
         {/* User Info Card */}
         <View style={styles.userCard}>
           <View style={styles.avatar}>
@@ -121,15 +124,21 @@ export default function ProfileScreen({ navigation, setIsAuthenticated }: any) {
         </View>
 
         {/* Logout Button */}
-        <TouchableOpacity
+        {/* <TouchableOpacity
   onPress={() => navigation.navigate('Logout')}
 >
   <Text>Logout</Text>
+</TouchableOpacity> */}
+<TouchableOpacity
+  style={styles.logoutButton}
+  onPress={() => navigation.navigate('Logout')}
+>
+  <Text style={styles.logoutButtonText}>Logout</Text>
 </TouchableOpacity>
 
 
         <View style={styles.footer}>
-          <Text style={styles.footerText}>BioLens © 2024</Text>
+          <Text style={styles.footerText}>BioLens © 2026</Text>
           <Text style={styles.footerSubtext}>Research-grade diatom analysis</Text>
         </View>
       </ScrollView>
@@ -150,7 +159,7 @@ const styles = StyleSheet.create({
   backButton: {
     position: 'absolute',
     top: 50,
-    right: 20,
+    left: 20,
     zIndex: 999,
   },
   centerContainer: {
@@ -161,11 +170,13 @@ const styles = StyleSheet.create({
   },
   header: {
     marginBottom: 20,
+    
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
     color: '#1a1a1a',
+    textAlign: 'center',
   },
   userCard: {
     backgroundColor: '#fff',
@@ -264,4 +275,38 @@ const styles = StyleSheet.create({
   footerSubtext: {
     fontSize: 12,
   },
+  logoutButton: {
+  backgroundColor: '#d9534f',
+  paddingHorizontal: 20,
+  paddingVertical: 12,
+  borderRadius: 8,
+  alignSelf: 'center',
+  marginTop: 20,
+  width: '60%',           // ✅ expand button width
+},
+logoutButtonText: {
+  color: '#fff',
+  fontSize: 16,
+  fontWeight: '600',
+  textAlign: 'center',
+},
+banner: {
+  paddingTop: 60,
+  paddingBottom: 40,
+  alignItems: 'center',
+  backgroundColor: '#2d5a3d',   // ✅ green banner
+  position: 'relative',
+},
+bannerTitle: {
+  fontSize: 28,
+  fontWeight: 'bold',
+  color: '#fff',                // ✅ white text over green
+},
+
+subtitle: {
+  fontSize: 14,
+  color: '#d0d0d0',
+  marginTop: 8,
+},
+
 });

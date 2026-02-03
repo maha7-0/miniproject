@@ -1,15 +1,14 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useState } from 'react';
 import {
+  ActivityIndicator,
+  ImageBackground,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
-  ActivityIndicator,
-  ImageBackground,
-  Image,
+  View
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { RootStackParamList, User } from 'src/types/type';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Home'>;
@@ -51,13 +50,9 @@ export default function HomeScreen({ navigation }: Props) {
   {/* Header */}
   <View style={styles.header}>
     <Text style={styles.logoText}>Biolens</Text>
-    <Image
-      source={require('../../assets/8.png')}
-      style={styles.profileIcon}
-    />
+    
   </View>
-
-  {/* 🔥 WELCOME BANNER */}
+  {/* Banner */}
   <View style={styles.banner}>
     <Text style={styles.bannerText}>
       Welcome to BIOLENS!
@@ -67,11 +62,11 @@ export default function HomeScreen({ navigation }: Props) {
   {/* Main content */}
   <View style={styles.content}>
     <TouchableOpacity
-      style={styles.uploadButton}
+      style={styles.Button}
       onPress={() => navigation.navigate('Login')}
       activeOpacity={0.8}
     >
-      <Text style={styles.uploadButtonText}>Go to Login</Text>
+      <Text style={styles.ButtonText}>Go to Login</Text>
     </TouchableOpacity>
   </View>
 </ImageBackground>
@@ -101,11 +96,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#fff',
   },
-  profileIcon: {
-    width: 32,
-    height: 32,
-    resizeMode: 'contain',
-  },
+  
   content: {
     flex: 1,
     justifyContent: 'center',
@@ -120,13 +111,17 @@ const styles = StyleSheet.create({
     marginTop:20,
     fontWeight: 'bold',
   },
-  uploadButton: {
-    backgroundColor: '#2d5a3d',
-    paddingVertical: 14,
-    paddingHorizontal: 32,
-    borderRadius: 12,
-  },
-  uploadButtonText: {
+ Button: {
+  backgroundColor: '#2d5a3d',
+  paddingVertical: 14,
+  paddingHorizontal: 32,
+  borderRadius: 12,
+  alignSelf: 'center',   // centers horizontally
+  marginTop: 10,         // adjust spacing above
+  marginBottom: -10,     // optional: pulls it slightly upward
+},
+
+  ButtonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: '600',
@@ -136,7 +131,6 @@ const styles = StyleSheet.create({
   marginHorizontal: 16,
   paddingVertical: 18,
   paddingHorizontal: 20,
-  //backgroundColor: 'rgba(0, 0, 0, 0.45)', // banner overlay
   borderRadius: 14,
   alignItems: 'center',
 },

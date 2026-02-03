@@ -1,3 +1,4 @@
+import { Ionicons } from '@expo/vector-icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useState } from 'react';
@@ -11,7 +12,6 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import { authService } from 'src/services';
 import { RootStackParamList } from 'src/types/type';
 
@@ -79,7 +79,7 @@ export default function LoginScreen({ navigation }: Props) {
     
     <ScrollView style={styles.container}>
       <View style={styles.header}>
-  <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+  <TouchableOpacity style={styles.backButton}    onPress={() => navigation.navigate('Home')}>
     <Ionicons name="arrow-back" size={28} color="#2d5a3d" />
   </TouchableOpacity>
   <Text style={styles.title}>BioLens</Text>

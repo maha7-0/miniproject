@@ -1,20 +1,19 @@
+import { Ionicons } from '@expo/vector-icons'; // Add this for the icon
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import axios from 'axios';
 import * as ImagePicker from 'expo-image-picker';
 import { useEffect, useState } from 'react';
-import { Ionicons } from '@expo/vector-icons'; // Add this for the icon
 import {
+  Alert,
+  Image,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
-  Image,
-  ActivityIndicator,
-  Alert,
-  ScrollView,
+  View
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
-import { RootStackParamList, ApiResponse, ClassificationResult } from 'src/types/type';
+import { ClassificationResult, RootStackParamList } from 'src/types/type';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Upload'>;
 
@@ -132,18 +131,27 @@ export default function UploadScreen({ navigation }: Props) {
   return (
     <View style={styles.container1}>
   {/* Banner */}
-  <View style={styles.header}>
-    <Text style={styles.title}>BioLens</Text>
-    <Text style={styles.subtitle}>Upload & Classification</Text>
+<View style={styles.header}>
+  <Text style={styles.title}>BioLens</Text>
+  <Text style={styles.subtitle}>Upload & Classification</Text>
 
-    {/* Profile button inside banner */}
-    <TouchableOpacity 
-      style={styles.profileButton}
-      onPress={() => navigation.navigate('Profile')}
-    >
-      <Ionicons name="person-circle-outline" size={35} color="#fff" />
-    </TouchableOpacity>
-  </View>
+  {/* Profile button inside banner */}
+  <TouchableOpacity 
+    style={styles.profileButton}
+    onPress={() => navigation.navigate('Profile')}
+  >
+    <Ionicons name="person-circle-outline" size={35} color="#fff" />
+  </TouchableOpacity>
+
+  {/* History button inside banner */}
+  <TouchableOpacity 
+    style={styles.historyButton}
+    onPress={() => navigation.navigate('History')}
+  >
+    <Ionicons name="time-outline" size={32} color="#fff" />
+  </TouchableOpacity>
+</View>
+
 
   {/* Scrollable content below banner */}
   <ScrollView
@@ -376,6 +384,11 @@ profileButton: {
   position: 'absolute',
   top: 20,    // ✅ inside the banner
   right: 20,
+},
+historyButton: {
+  position: 'absolute',
+  top: 20,
+  right: 70,   // ✅ places it to the left of the profile icon
 },
 
 });
