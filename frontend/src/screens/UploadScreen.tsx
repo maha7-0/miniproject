@@ -193,69 +193,6 @@ export default function UploadScreen({ navigation }: Props) {
   </ScrollView>
 </View>
 
-//     <View style={styles.container1}>
-     
-//       <ScrollView
-//         contentContainerStyle={styles.container}
-//         showsVerticalScrollIndicator={false}
-//       >
-//         <View style={styles.header}>
-//   <Text style={styles.title}>BioLens</Text>
-//   <Text style={styles.subtitle}>Upload & Classification</Text>
-
-//   {/* Profile button inside header */}
-//   <TouchableOpacity 
-//     style={styles.profileButton}
-//     onPress={() => navigation.navigate('Profile')}
-//   >
-//     <Ionicons name="person-circle-outline" size={35} color="#fff" />
-//   </TouchableOpacity>
-// </View>
-
-//         {/* Curved Illustration */}
-//         <View style={styles.topImageWrapper}>
-//           <Image
-//             source={require('../../assets/output.jpeg')}
-//             style={styles.image}
-//           />
-//         </View>
-
-//         <Text style={styles.title}>Upload your image</Text>
-
-//         <TouchableOpacity 
-//           style={styles.uploadBtn} 
-//           onPress={() => pickImage('gallery')}
-//           disabled={loading || classifying}
-//         >
-//           <Text style={styles.uploadText}>Click to upload</Text>
-//         </TouchableOpacity>
-//           {image && (
-//           <View style={styles.previewContainer}>
-//             <TouchableOpacity
-//               style={styles.cancelBtn}
-//               onPress={() => setImage(null)}
-//             >
-//               <Text style={styles.cancelText}>✕</Text>
-//             </TouchableOpacity>
-
-//             <Image 
-//               source={{ uri: `data:image/jpeg;base64,${image}` }} 
-//               style={styles.preview} 
-//             />
-//           </View>
-//         )}
-
-//         <TouchableOpacity 
-//           style={styles.predictCircle} 
-//           onPress={handleClassify}
-//           disabled={classifying}
-//         >
-//           <Text style={styles.predictText}>
-//             {classifying ? 'Processing...' : `Start\nPredicting`}
-//           </Text>
-//         </TouchableOpacity>
-//       </ScrollView>
-//     </View>
   );
 }
 
