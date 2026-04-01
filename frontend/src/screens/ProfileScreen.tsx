@@ -129,6 +129,7 @@ export default function ProfileScreen({ navigation, setIsAuthenticated }: any) {
 >
   <Text>Logout</Text>
 </TouchableOpacity> */}
+
 <TouchableOpacity
   style={styles.logoutButton}
   onPress={() => navigation.navigate('Logout')}

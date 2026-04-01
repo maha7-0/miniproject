@@ -3,16 +3,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import {
-<<<<<<< HEAD
-    ActivityIndicator,
-    Alert,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-=======
   ActivityIndicator,
   Alert,
   ScrollView,
@@ -21,7 +11,6 @@ import {
   TextInput,
   TouchableOpacity,
   View,
->>>>>>> 9fe279923d8f5cb904d29ae8f8d4252783bbd7e1
 } from 'react-native';
 import { authService } from 'src/services';
 import { RootStackParamList } from 'src/types/type';
@@ -62,11 +51,11 @@ export default function LoginScreen({ navigation }: Props) {
         await AsyncStorage.setItem('userToken', response.token);
         await AsyncStorage.setItem('user', JSON.stringify(response.user));
 
-<<<<<<< HEAD
+
         navigation.navigate('ProjectInfo');
-=======
+
         navigation.navigate('Upload');
->>>>>>> 9fe279923d8f5cb904d29ae8f8d4252783bbd7e1
+
 
       } else {
         Alert.alert('Login Failed', 'Invalid credentials or server error');

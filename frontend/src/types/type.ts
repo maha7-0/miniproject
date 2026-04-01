@@ -99,9 +99,9 @@ export type RootStackParamList = {
   AdminLogin: undefined;
   AdminDashboard: undefined;
   UserTabs: undefined;
-<<<<<<< HEAD
+
   ProjectInfo : undefined;
-=======
->>>>>>> 9fe279923d8f5cb904d29ae8f8d4252783bbd7e1
+
+
 
 };

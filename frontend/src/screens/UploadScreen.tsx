@@ -134,13 +134,11 @@ export default function UploadScreen({ navigation }: Props) {
 <View style={styles.header}>
   <Text style={styles.title}>BioLens</Text>
   <Text style={styles.subtitle}>Upload & Classification</Text>
-<<<<<<< HEAD
+
 <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
     <Ionicons name="arrow-back" size={28} color="#2d5a3d" />
   </TouchableOpacity>
-=======
-
->>>>>>> 9fe279923d8f5cb904d29ae8f8d4252783bbd7e1
+=
   {/* Profile button inside banner */}
   <TouchableOpacity 
     style={styles.profileButton}
@@ -240,7 +238,6 @@ predictCircle: {
   borderWidth: 12,
   borderColor: '#8fe0b0',
 },
-<<<<<<< HEAD
 backButton: {
   position: 'absolute',
   top: 40,   // adjust for status bar
@@ -250,8 +247,6 @@ backButton: {
   borderRadius: 50,        // optional, if you want a circular white background
   padding: 2,              // small padding so the white background shows
 },
-=======
->>>>>>> 9fe279923d8f5cb904d29ae8f8d4252783bbd7e1
 
   previewContainer: {
     position: 'relative',
